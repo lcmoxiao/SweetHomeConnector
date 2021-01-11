@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_outer_classname = "BeatMessage";
+
+
+message Beat {
+    int64 requesttime = 2;
+    int64 responsetime = 3;
+}
