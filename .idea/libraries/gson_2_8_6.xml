@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="netty-all-5.0.0.Alpha2">
+  <library name="gson-2.8.6">
     <CLASSES>
-      <root url="jar://D:/JAVASERVERJDK/netty-all-5.0.0.Alpha2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gson-2.8.6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

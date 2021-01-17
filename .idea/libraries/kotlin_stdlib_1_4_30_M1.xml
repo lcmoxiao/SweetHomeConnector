@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="msgpack-0.6.12">
+  <library name="kotlin-stdlib-1.4.30-M1">
     <CLASSES>
-      <root url="jar://D:/JAVASERVERJDK/msgpack-0.6.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/kotlin-stdlib-1.4.30-M1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

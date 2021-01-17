@@ -1,6 +1,6 @@
-package main;
+package client;
 
-import connector.proto.BeatMessage;
+import client.handler.BeatClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -13,32 +13,46 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import proto.ConnectorMsg;
+import client.handler.TransHandler;
 
 import java.util.concurrent.TimeUnit;
 
 public class ConnectorClient {
     static final ChannelHandler[] handlers = new ChannelHandler[]{
             new ProtobufVarint32FrameDecoder(),
-            new ProtobufDecoder(BeatMessage.Beat.getDefaultInstance()),
+            new ProtobufDecoder(ConnectorMsg.cMsgInfo.getDefaultInstance()),
             new ProtobufVarint32LengthFieldPrepender(),
             new ProtobufEncoder(),
-            new IdleStateHandler(1, 1, 0, TimeUnit.SECONDS),
+            new IdleStateHandler(3, 3, 0, TimeUnit.SECONDS),
             new BeatClientHandler(),
+            new TransHandler()
     };
     static int port = 8081;
     static String host = "192.168.0.106";
+    static Channel channel;
+
+    public static Channel getChannel() {
+        return channel;
+    }
 
     public static void main(String[] args) {
         if (args != null && args.length > 0) {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException ignored) {
+
             }
         }
+        new Thread() {
+            @Override
+            public void run() {
+                ConnectorClient.connect(port, host, handlers);
+            }
+        }.start();
+        new UserFunction().test();
 
-        ConnectorClient.connect(port, host, handlers);
     }
-
 
     public static void connect(int port, String host, ChannelHandler[] handlers) {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -58,7 +72,8 @@ public class ConnectorClient {
             ChannelFuture f = null;
             try {
                 f = b.connect(host, port).sync();
-                f.channel().closeFuture().sync();
+                channel = f.channel();
+                channel.closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -70,7 +85,7 @@ public class ConnectorClient {
     public static void reconnect() {
         final ChannelHandler[] handlers = new ChannelHandler[]{
                 new ProtobufVarint32FrameDecoder(),
-                new ProtobufDecoder(BeatMessage.Beat.getDefaultInstance()),
+                new ProtobufDecoder(ConnectorMsg.cMsgInfo.getDefaultInstance()),
                 new ProtobufVarint32LengthFieldPrepender(),
                 new ProtobufEncoder(),
                 new IdleStateHandler(1, 1, 0, TimeUnit.SECONDS),
