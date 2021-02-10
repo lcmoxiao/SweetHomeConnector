@@ -43,4 +43,14 @@ public class MatchRelation implements Serializable {
     public void setMatchrelationcreatetime(Date matchrelationcreatetime) {
         this.matchrelationcreatetime = matchrelationcreatetime;
     }
+
+    @Override
+    public String toString() {
+        return "MatchRelation{" +
+                "matchrelationid=" + matchrelationid +
+                ", userid1=" + userid1 +
+                ", userid2=" + userid2 +
+                ", matchrelationcreatetime=" + matchrelationcreatetime +
+                '}';
+    }
 }

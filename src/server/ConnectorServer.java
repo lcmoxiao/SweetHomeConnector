@@ -14,8 +14,9 @@ import io.netty.handler.logging.LoggingHandler;
 import proto.ConnectorMsg;
 import server.handler.BeatServerHandler;
 import server.handler.ConnectHandler;
-import server.handler.ConnectorTransHandler;
-import server.transclient.TransClient;
+import server.handler.TransHandler;
+import server.handler.MatchHandler;
+import server.myservice.trans.TransClient;
 
 public class ConnectorServer {
     static int port = 8081;
@@ -68,7 +69,8 @@ public class ConnectorServer {
                                     new ProtobufEncoder(),
                                     new ConnectHandler(),
                                     new BeatServerHandler(),
-                                    new ConnectorTransHandler()
+                                    new TransHandler(),
+                                    new MatchHandler()
                             };
                             sc.pipeline().addLast(handlers);
                         }

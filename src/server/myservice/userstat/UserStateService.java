@@ -10,6 +10,12 @@ import static server.tools.HttpRequestTools.*;
 
 public class UserStateService {
 
+    public static UserStateService instance = new UserStateService();
+
+
+    public static void main(String[] args) {
+        System.out.println(instance.isOnline(1));
+    }
 
     public boolean isOnline(Integer userid) {
         String resp = null;

@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import proto.ConnectorMsg;
 import server.myservice.pojo.UserState;
 import server.myservice.userstat.UserStateService;
+import server.myservice.trans.TransClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,8 @@ public class ConnectHandler extends ChannelHandlerAdapter {
 
             userStateService.online(userid, UserState.ONLINE);
             channelHashMap.put(userid, ctx.channel());
-
+            //转发connect信息给TransServer
+            TransClient.sendMsg(msg);
         } else {
             //System.out.println("非beat信息向下传递");
             ctx.fireChannelRead(msg);

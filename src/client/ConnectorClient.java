@@ -1,6 +1,8 @@
 package client;
 
+
 import client.handler.BeatClientHandler;
+import client.handler.MsgHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -14,47 +16,21 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import proto.ConnectorMsg;
-import client.handler.TransHandler;
 
 import java.util.concurrent.TimeUnit;
 
 public class ConnectorClient {
-    static final ChannelHandler[] handlers = new ChannelHandler[]{
-            new ProtobufVarint32FrameDecoder(),
-            new ProtobufDecoder(ConnectorMsg.cMsgInfo.getDefaultInstance()),
-            new ProtobufVarint32LengthFieldPrepender(),
-            new ProtobufEncoder(),
-            new IdleStateHandler(3, 3, 0, TimeUnit.SECONDS),
-            new BeatClientHandler(),
-            new TransHandler()
-    };
     static int port = 8081;
-    static String host = "192.168.0.106";
+    static String host = "192.168.0.105";
     static Channel channel;
 
     public static Channel getChannel() {
         return channel;
     }
 
-    public static void main(String[] args) {
-        if (args != null && args.length > 0) {
-            try {
-                port = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ignored) {
 
-            }
-        }
-        new Thread() {
-            @Override
-            public void run() {
-                ConnectorClient.connect(port, host, handlers);
-            }
-        }.start();
-        new UserFunction().test();
 
-    }
-
-    public static void connect(int port, String host, ChannelHandler[] handlers) {
+    public static void connect() {
         EventLoopGroup group = new NioEventLoopGroup();
 
         try {
@@ -66,6 +42,15 @@ public class ConnectorClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel sc) {
+                            final ChannelHandler[] handlers = new ChannelHandler[]{
+                                    new ProtobufVarint32FrameDecoder(),
+                                    new ProtobufDecoder(ConnectorMsg.cMsgInfo.getDefaultInstance()),
+                                    new ProtobufVarint32LengthFieldPrepender(),
+                                    new ProtobufEncoder(),
+                                    new IdleStateHandler(3, 3, 0, TimeUnit.SECONDS),
+                                    new BeatClientHandler(),
+                                    new MsgHandler()
+                            };
                             sc.pipeline().addLast(handlers);
                         }
                     });
@@ -83,15 +68,7 @@ public class ConnectorClient {
     }
 
     public static void reconnect() {
-        final ChannelHandler[] handlers = new ChannelHandler[]{
-                new ProtobufVarint32FrameDecoder(),
-                new ProtobufDecoder(ConnectorMsg.cMsgInfo.getDefaultInstance()),
-                new ProtobufVarint32LengthFieldPrepender(),
-                new ProtobufEncoder(),
-                new IdleStateHandler(1, 1, 0, TimeUnit.SECONDS),
-                new BeatClientHandler(),
-        };
-        connect(port, host, handlers);
+        connect();
     }
 
 }

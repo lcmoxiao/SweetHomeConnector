@@ -1,4 +1,4 @@
-package server.transclient;
+package server.myservice.trans;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -16,7 +16,7 @@ import proto.ConnectorMsg;
 public class TransClient {
 
     static int port = 8082;
-    static String host = "192.168.0.106";
+    static String host = "192.168.0.105";
     static Channel channel;
 
     public static void start() {
@@ -28,6 +28,15 @@ public class TransClient {
         return channel;
     }
 
+
+    public static void sendMsg(Object msg) {
+        System.out.println("转发" + msg + "至TransServer");
+        if (TransClient.getChannel() != null) {
+            TransClient.getChannel().writeAndFlush(msg);
+        } else {
+            System.out.println("TransServer未初始化成功，转发失败");
+        }
+    }
 
     public static void connect(int port, String host) {
         EventLoopGroup group = new NioEventLoopGroup();

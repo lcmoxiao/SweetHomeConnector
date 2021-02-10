@@ -1,5 +1,6 @@
 package client.handler;
 
+
 import client.ConnectorClient;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -7,8 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import proto.ConnectorMsg;
 
-import static client.MsgGenerate.generateBeatMessage;
-
+import static client.tool.MsgGenerateTools.generateBeatMessage;
 
 @ChannelHandler.Sharable
 public class BeatClientHandler extends ChannelHandlerAdapter {
@@ -53,11 +53,11 @@ public class BeatClientHandler extends ChannelHandlerAdapter {
         }
 //        System.out.println(ctx.channel().remoteAddress() + "超时事件：" + eventType);
         if (Math.max(readIdleTimes, writeIdleTimes) > 1) {
-            System.out.println("超过3s未有读写，尝试确认连接,第" + ++reconnectTimes + "次");
+//            System.out.println("超过3s未有读写，尝试确认连接,第" + ++reconnectTimes + "次");
             ctx.channel().writeAndFlush(generateBeatMessage());
         }
         if (Math.max(readIdleTimes, writeIdleTimes) > 2) {
-            System.out.println("主动确认连接失败，断开连接,尝试重连");
+//            System.out.println("主动确认连接失败，断开连接,尝试重连");
             ConnectorClient.reconnect();
             ctx.channel().close();
         }
@@ -69,7 +69,7 @@ public class BeatClientHandler extends ChannelHandlerAdapter {
 
         if (cmsg.getCMsgType() == ConnectorMsg.cMsgInfo.CMsgType.BEAT) {
             resetIdleTimes();
-            System.out.println("得到服务器的beat信息，重置超时计时器");
+//            System.out.println("得到服务器的beat信息，重置超时计时器");
         } else {
             //System.out.println("非beat信息向下传递");
             ctx.fireChannelRead(msg);

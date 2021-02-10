@@ -7,6 +7,7 @@ message cMsgInfo{
     BEAT = 0;
     TRANS = 1;
     CONNECT = 2;
+    MATCH = 3;
   }
 
   CMsgType cMsgType = 1;
@@ -15,6 +16,7 @@ message cMsgInfo{
     Beat beat = 2;
     Trans trans = 3;
     Connect connect = 4;
+    FindMatch findmatch = 5;
   }
 }
 
@@ -24,17 +26,17 @@ message Beat {
 }
 
 message Trans {
-  int32 msgID = 1;
-  int32 srcUserid = 2;
-  int32 dstUserid = 3;
   enum MsgType {
     WORD = 0;
     PHOTO = 1;
     VOICE = 2;
   }
+  int32 msgID = 1;
+  int32 srcUserid = 2;
+  int32 dstUserid = 3;
   MsgType msgType = 4;
   bytes msgContent = 5;
-  int32 msgMark = 6;
+  int32 msgMark = 6;  // 默认为0，重传为1
   int32 retryTimes = 7;
 }
 
@@ -44,9 +46,9 @@ message Connect {
     ONLINE = 0;
     OFFLINE = 1;
   }
-  int64 responsetime = 2;
+  MsgType msgType = 2;
+  int64 responsetime = 3;
 }
-
 
 
 message FindMatch {
